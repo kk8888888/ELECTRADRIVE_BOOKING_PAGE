@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator | ElectraDrive EV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="perodua-style.css">
+    <style>
+        .calc-container {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .result-box {
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 5px solid var(--primary);
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: var(--text-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .result-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .calc-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .calc-header h1 {
+            font-size: 32px;
+            color: var(--secondary);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Reuse Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="perodua-index.html" class="nav-logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">ELECTRADRIVE</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="perodua-index.html#models" class="nav-link">Models</a></li>
+                <li><a href="perodua-index.html#technology" class="nav-link">Technology</a></li>
+                <li><a href="perodua-index.html#services" class="nav-link">Services</a></li>
+                <li><a href="perodua-index.html#gallery" class="nav-link">Gallery</a></li>
+            </ul>
+            <a href="perodua-index.html#book" class="btn btn-primary">Book Now</a>
+        </div>
+    </nav>
+
+    <div class="calc-container">
+        <div class="calc-header">
+            <span class="section-tag">FINANCE</span>
+            <h1>ESTIMATE YOUR MONTHLY PAYMENT</h1>
+            <p>Calculated based on standard 3.0% interest rate and 10% downpayment.</p>
+        </div>
+
+        <div class="calc-grid">
+            <div class="calc-form">
+                <div class="form-group">
+                    <label>Select Model</label>
+                    <select id="modelSelect" class="form-control">
+                        <option value="129900">ElectraDrive Lite - RM 129,900</option>
+                        <option value="189900" selected>ElectraDrive Sport - RM 189,900</option>
+                        <option value="259900">ElectraDrive Pro - RM 259,900</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Down Payment (RM)</label>
+                    <input type="number" id="downPayment" class="form-control" value="18990">
+                </div>
+                <div class="form-group">
+                    <label>Loan Period (Years)</label>
+                    <select id="loanPeriod" class="form-control">
+                        <option value="5">5 Years</option>
+                        <option value="7" selected>7 Years</option>
+                        <option value="9">9 Years</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="interestRate" class="form-control" value="3.0" step="0.1">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <span class="result-label">Estimated Monthly Installment</span>
+                <div class="result-value" id="monthlyInstallment">RM 2,450</div>
+                <p style="font-size: 12px; color: var(--text-light);">*Indicative amount only. Final rates depend on
+                    bank approval.</p>
+                <a href="index.html#book" class="btn btn-primary" style="margin-top: 20px;">Proceed to
+                    Booking</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modelSelect = document.getElementById('modelSelect');
+        const downPaymentInput = document.getElementById('downPayment');
+        const loanPeriodSelect = document.getElementById('loanPeriod');
+        const interestRateInput = document.getElementById('interestRate');
+        const monthlyValueOutput = document.getElementById('monthlyInstallment');
+
+        function calculate() {
+            const price = parseFloat(modelSelect.value);
+            const downPayment = parseFloat(downPaymentInput.value);
+            const years = parseInt(loanPeriodSelect.value);
+            const rate = parseFloat(interestRateInput.value) / 100;
+
+            const loanAmount = price - downPayment;
+            const totalInterest = loanAmount * rate * years;
+            const totalRepayment = loanAmount + totalInterest;
+            const monthly = totalRepayment / (years * 12);
+
+            monthlyValueOutput.innerText = `RM ${Math.round(monthly).toLocaleString()}`;
+        }
+
+        // Auto-update downpayment when model changes
+        modelSelect.addEventListener('change', () => {
+            downPaymentInput.value = Math.round(modelSelect.value * 0.1);
+            calculate();
+        });
+
+        [downPaymentInput, loanPeriodSelect, interestRateInput].forEach(el => {
+            el.addEventListener('input', calculate);
+        });
+
+        // Initialize from URL params if any
+        window.addEventListener('load', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('price')) {
+                modelSelect.value = params.get('price');
+                downPaymentInput.value = Math.round(params.get('price') * 0.1);
+            }
+            calculate();
+        });
+    </script>
+</body>
+
+</html>
